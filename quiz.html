@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>English Level One Quiz</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="quiz-box">
+
+    <h1>English Level One Quiz</h1>
+
+    <p id="student"></p>
+
+    <div id="quiz"></div>
+
+    <button id="nextBtn" onclick="nextQuestion()">NEXT</button>
+
+</div>
+
+<script>
+
+const studentName = localStorage.getItem("studentName");
+
+document.getElementById("student").textContent =
+    "Good luck, " + studentName + "!";
+
+const questions = [
+
+    {
+        question: "Choose the correct answer: I ___ a student.",
+        options: ["am", "is", "are", "be"],
+        answer: "am"
+    },
+
+    {
+        question: "Choose the correct answer: She ___ a teacher.",
+        options: ["am", "is", "are", "be"],
+        answer: "is"
+    },
+
+    {
+        question: "Choose the correct answer: They ___ from Libya.",
+        options: ["am", "is", "are", "be"],
+        answer: "are"
+    },
+
+    {
+        question: "Choose the correct answer: He ___ got a car.",
+        options: ["have", "has", "is", "are"],
+        answer: "has"
+    },
+
+    {
+        question: "Choose the correct answer: We ___ got two brothers.",
+        options: ["has", "have", "is", "am"],
+        answer: "have"
+    },
+
+    {
+        question: "Choose the correct answer: This is ___ book.",
+        options: ["I", "my", "me", "mine"],
+        answer: "my"
+    },
+
+    {
+        question: "Choose the correct answer: Ahmed is from Libya. ___ is Libyan.",
+        options: ["He", "She", "They", "We"],
+        answer: "He"
+    },
+
+    {
+        question: "Choose the correct answer: Sara is from Egypt. ___ is Egyptian.",
+        options: ["He", "She", "We", "They"],
+        answer: "She"
+    },
+
+    {
+        question: "Choose the correct answer: ___ is your name?",
+        options: ["Who", "What", "Where", "When"],
+        answer: "What"
+    },
+
+    {
+        question: "Choose the correct answer: ___ are you from?",
+        options: ["Who", "What", "Where", "How"],
+        answer: "Where"
+    },
+
+    {
+        question: "Choose the correct answer: ___ old are you?",
+        options: ["What", "Who", "How", "Where"],
+        answer: "How"
+    },
+
+    {
+        question: "Choose the correct answer: ___ is your teacher?",
+        options: ["Who", "What", "Where", "When"],
+        answer: "Who"
+    },
+
+    {
+        question: "What color is the sky on a clear day?",
+        options: ["Blue", "Black", "Brown", "Grey"],
+        answer: "Blue"
+    },
+
+    {
+        question: "What color is grass usually?",
+        options: ["Red", "Green", "White", "Yellow"],
+        answer: "Green"
+    },
+
+    {
+        question: "Which one is a job?",
+        options: ["Doctor", "Monday", "Brazil", "Blue"],
+        answer: "Doctor"
+    },
+
+    {
+        question: "Which job works with photographs?",
+        options: ["Chef", "Photographer", "Builder", "Police officer"],
+        answer: "Photographer"
+    },
+
+    {
+        question: "Which one is a day of the week?",
+        options: ["Turkey", "Friday", "Teacher", "Green"],
+        answer: "Friday"
+    },
+
+    {
+        question: "What number comes after 19?",
+        options: ["18", "20", "21", "29"],
+        answer: "20"
+    },
+
+    {
+        question: "What number comes before 50?",
+        options: ["48", "49", "51", "59"],
+        answer: "49"
+    },
+
+    {
+        question: "What is 30 + 5?",
+        options: ["25", "35", "40", "45"],
+        answer: "35"
+    },
+
+    {
+        question: "What is 60 + 10?",
+        options: ["50", "60", "70", "80"],
+        answer: "70"
+    },
+
+    {
+        question: "What nationality is someone from Japan?",
+        options: ["Japanese", "Japanian", "Japanesean", "Japan"],
+        answer: "Japanese"
+    },
+
+    {
+        question: "What nationality is someone from Canada?",
+        options: ["Canadian", "Canada", "Canadan", "Canadish"],
+        answer: "Canadian"
+    },
+
+    {
+        question: "What nationality is someone from Brazil?",
+        options: ["Brazilian", "Brazilish", "Brazilianer", "Brazil"],
+        answer: "Brazilian"
+    },
+
+    {
+        question: "Choose the correct sentence.",
+        options: [
+            "He are a doctor.",
+            "He is a doctor.",
+            "He am a doctor.",
+            "He be a doctor."
+        ],
+        answer: "He is a doctor."
+    },
+
+    {
+        question: "Choose the correct sentence.",
+        options: [
+            "They is students.",
+            "They am students.",
+            "They are students.",
+            "They be students."
+        ],
+        answer: "They are students."
+    },
+
+    {
+        question: "Choose the correct answer: ___ are my books.",
+        options: ["This", "That", "These", "It"],
+        answer: "These"
+    },
+
+    {
+        question: "Choose the correct answer: ___ is my bag over there.",
+        options: ["These", "Those", "That", "They"],
+        answer: "That"
+    },
+
+    {
+        question: "True or False: Monday comes before Tuesday.",
+        options: ["True", "False"],
+        answer: "True"
+    },
+
+    {
+        question: "True or False: 100 is smaller than 50.",
+        options: ["True", "False"],
+        answer: "False"
+    }
+
+];
+
+let currentQuestion = 0;
+let score = 0;
+
+function showQuestion() {
+
+    const q = questions[currentQuestion];
+
+    let html = `
+        <h2>Question ${currentQuestion + 1} of ${questions.length}</h2>
+        <p class="question">${q.question}</p>
+    `;
+
+    q.options.forEach(option => {
+
+        html += `
+            <button class="option"
+                onclick="selectAnswer(this, '${option.replace(/'/g, "\\'")}')">
+                ${option}
+            </button>
+        `;
+
+    });
+
+    document.getElementById("quiz").innerHTML = html;
+
+    document.getElementById("nextBtn").style.display = "none";
+}
+
+function selectAnswer(button, answer) {
+
+    const correctAnswer = questions[currentQuestion].answer;
+
+    const buttons = document.querySelectorAll(".option");
+
+    buttons.forEach(btn => {
+        btn.disabled = true;
+    });
+
+    if (answer === correctAnswer) {
+        score++;
+        button.classList.add("correct");
+    } else {
+        button.classList.add("wrong");
+
+        buttons.forEach(btn => {
+            if (btn.textContent.trim() === correctAnswer) {
+                btn.classList.add("correct");
+            }
+        });
+    }
+
+    document.getElementById("nextBtn").style.display = "block";
+}
+
+function nextQuestion() {
+
+    currentQuestion++;
+
+    if (currentQuestion < questions.length) {
+        showQuestion();
+    } else {
+        showResult();
+    }
+}
+
+function showResult() {
+
+    const percentage = Math.round((score / questions.length) * 100);
+
+    document.querySelector(".quiz-box").innerHTML = `
+        <h1>Quiz Completed!</h1>
+
+        <p class="final-name">${studentName}</p>
+
+        <h2>Your Score</h2>
+
+        <div class="score">
+            ${score} / ${questions.length}
+        </div>
+
+        <p>${percentage}%</p>
+
+        <p>Great job!</p>
+    `;
+}
+
+showQuestion();
+
+</script>
+
+</body>
+</html>
